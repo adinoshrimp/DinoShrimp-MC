@@ -1,14 +1,78 @@
 services:
+  traefik:
+    image: traefik:v3.4
+    command:
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+
+      # File provider for TLS certs
+      - "--providers.file.filename=/dynamic/certificates.yml"
+
+      # HTTP
+      - "--entrypoints.web.address=:80"
+
+      # HTTPS
+      - "--entrypoints.websecure.address=:443"
+
+      # Dashboard
+      - "--api.dashboard=true"
+      - "--api.insecure=true"
+
+
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"
+
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+
+      # Mount certs
+      - ./traefik/certs:/certs:ro
+            - ./traefik/certificates.yml:/dynamic/certificates.yml:ro
+
+      # Mount dynamic TLS config
+      - ./traefik/certificates.yml:/dynamic/certificates.yml:ro
+
   mc:
     image: itzg/minecraft-server
     environment:
       EULA: "true"
       TYPE: "FABRIC"
-      MEMORY: "10G"
+      MEMORY: "15G"
+      OPS: |
+        _DinoShrimp
+      VIEW_DISTANCE: 32
+      SPAWN_PROTECTION: 16
+      SERVER_NAME: "DinoShrimp MC"
+      MOTD: "I like dinos :)"
     ports:
-        - "25565:25565"
-        - "25565:25565/udp"
+      - "25565:25565"         # Minecraft Java TCP
+      - "19132:19132/udp"     # Minecraft Bedrock UDP
+      - "8100:8100"           # Bluemap
     volumes:
       - ./data:/data
       - ./mods:/data/mods
       - ./config:/data/config
+      - ./server-icon.png:/data/server-icon.png
+    labels:
+      - "traefik.enable=false"
+
+  website:
+    build: ./website
+    depends_on:
+      - mc
+    labels:
+      - "traefik.enable=true"
+
+      # HTTPS Router
+      - "traefik.http.routers.website-https.rule=Host(`mc.dinoshrimp.com`)"
+      - "traefik.http.routers.website-https.entrypoints=websecure"
+      - "traefik.http.routers.website-https.tls=true"
+      - "traefik.http.services.website.loadbalancer.server.port=80"
+
+      # HTTP Router (no TLS)
+      - "traefik.http.routers.website-http.rule=Host(`mc.dinoshrimp.com`)"
+      - "traefik.http.routers.website-http.entrypoints=web"
+      - "traefik.http.routers.website-http.tls=false"
+      - "traefik.http.services.website.loadbalancer.server.port=80"
