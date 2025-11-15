@@ -1,0 +1,30 @@
+---
+import { ClientRouter } from "astro:transitions";
+
+import "../styles/global.css";
+import MusicToggle from "../components/MusicToggle.astro";
+import ServerStatus from "../components/ServerStatus.astro";
+
+import { APP_TITLE, APP_DESCRIPTION } from '../consts.ts';
+const { title, description } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.png" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jacquard+12&family=Pixelify+Sans:wght@400..700&display=swap" rel="stylesheet">
+    <meta name="generator" content={Astro.generator} />
+    <meta name="description" content={ APP_DESCRIPTION } />
+    <title>{title} | { APP_TITLE }</title>
+    <ClientRouter />
+</head>
+<body class="bg-background text-default md:text-xl">
+    <MusicToggle />
+    <slot />
+</body>
+</html>

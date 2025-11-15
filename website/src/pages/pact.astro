@@ -1,0 +1,89 @@
+---
+import Layout from '../layouts/Default.astro';
+import PlayIcon from '../components/Icons/play.svg';
+import PauseIcon from '../components/Icons/pause.svg';
+import ScriptIcon from '../components/Icons/script.svg';
+import Logo from '../components/Logo.astro';
+import Button from '../components/Button.astro';
+---
+
+<Layout title="Pact">
+    <div class="container mx-auto px-4 py-8 flex flex-col min-h-screen justify-center items-center" x-data="{ isPlaying: false, playVoiceLine() { const audio = document.getElementById('voiceline'); if (audio.paused) { audio.play(); this.isPlaying = true; } else { audio.pause(); this.isPlaying = false; } } }">
+        <div class="p-10 flex flex-col gap-3">
+            <Logo />
+            <div>
+                <p>There was once a place where Bedrock and Java found their peace,</p>
+                <p>Yet as the sun set on their joyous days, their bond did cease.</p>
+                <p>Once kindred spirits, now parted by treachery's cruel hand,</p>
+                <p>Their laughter turned to whispers, lost across the barren land.</p>
+            </div>
+            <div>
+                <p>Mountains of anger rose between them, stark and high they stood,</p>
+                <p>A fracture forged in moments that grew darker than they should.</p>
+                <p>What was once a haven of friendship now lay empty and cold,</p>
+                <p>As chilling winds swept through the dreams that faded with the bold.</p>
+            </div>
+            <div>
+                <p>Yet, dear council, let us not despair for the trials at our door,</p>
+                <p>From this darkness, a chance for hope may yet appear once more.</p>
+                <p>Let us gather our hearts, and the wounds of the past shall mend,</p>
+                <p>That Bedrock and Java might find strength as they once did transcend.</p>
+            </div>
+
+            <div class="mt-5">
+                <p>With undying fealty to our new found alliance,</p>
+                <p>Sir Maxim III</p>
+            </div>
+            <div class="flex gap-2 items-center justify-between mt-5">
+                <Button type="transparent" @click="playVoiceLine">
+                    <span x-show="!isPlaying" class="flex items-center">
+                        <PlayIcon class="w-8" />
+                        <span>Play</span>
+                    </span>
+
+                    <span x-show="isPlaying" class="flex items-center">
+                        <PauseIcon class="w-8" />
+                        <span>Pause</span>
+                    </span>
+                </Button>
+                <Button id="sealPactButton">
+                    <ScriptIcon class="w-8" />
+                    <span>Seal the pact</span>
+                </Button>
+            </div>
+        </div>
+        <audio src="/audio/sir-maxim-voiceline.mp3" autoplay id="voiceline" preload="auto"></audio>
+    </div>
+</Layout>
+
+<script>
+import { navigate } from "astro:transitions/client";
+document.addEventListener("astro:page-load", () => {
+
+  const button = document.getElementById('sealPactButton');
+
+    if (button) {
+      button.addEventListener('click', async () => {
+        setCookie('pact', 'sealed', 90);
+
+        // ✅ Use native browser View Transitions API (same as astro:transitions/client)
+        if (document.startViewTransition) {
+          document.startViewTransition(() => {
+            navigate("/");
+          });
+        } else {
+          // fallback for browsers without support
+          window.location.href = '/';
+        }
+      });
+    }
+
+    function setCookie(name, value, days) {
+      const d = new Date();
+      d.setTime(d.getTime() + days * 24 * 60 * 60 * 1000);
+      const expires = 'expires=' + d.toUTCString();
+      document.cookie = `${name}=${value};${expires};path=/`;
+    }
+
+});
+</script>

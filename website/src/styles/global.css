@@ -1,0 +1,24 @@
+@import "tailwindcss";
+
+@theme {
+    --color-violet-100: #F3EEFF;
+    --color-violet-200: #DFD5F8;
+    --color-violet-300: #CBBBF1;
+    --color-violet-400: #B7A2EA;
+    --color-violet-500: #A288E3;
+    --color-violet-600: #916DF1;
+    --color-violet-700: #7D55EC;
+    --color-violet-800: #6143B4;
+    --color-violet-900: #44307B;
+    --color-violet-950: #271D43;
+
+    --color-background: var(--color-zinc-950);
+    --color-default: var(--color-red-100);
+
+    --font-sans: "Pixelify Sans", sans-serif;
+    --font-title: "Jacquard 12", system-ui;
+}
+
+::selection {
+    @apply bg-default text-background;
+}

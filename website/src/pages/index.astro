@@ -1,0 +1,48 @@
+---
+import Layout from '../layouts/Default.astro';
+import Logo from '../components/Logo.astro';
+import Button from '../components/Button.astro';
+
+import CopyIcon from '../components/Icons/copy.svg';
+import CheckIcon from '../components/Icons/check.svg';
+---
+
+<Layout title="Home">
+    <div
+        x-data="{
+            copied: false,
+            checkCookie() {
+                const cookieValue = document.cookie.split('; ').find(row => row.startsWith('pact='));
+                if (!cookieValue || !cookieValue.split('=')[1] === 'sealed') {
+                    window.location.href = '/pact';
+                }
+            },
+            copy() {
+                navigator.clipboard.writeText('mc.dinoshrimp.com');
+                this.copied = true;
+                setTimeout(() => this.copied = false, 2000);
+            }
+        }"
+        x-init="checkCookie()"
+        class="container mx-auto px-4 py-8 flex flex-col min-h-screen justify-center items-center"
+    >
+        <div class="p-10 flex flex-col justify-center items-center gap-3">
+            <p>You're now part of the</p>
+            <Logo />
+
+            <Button class="flex items-center gap-2" @click="copy()">
+                <span>mc.dinoshrimp.com</span>
+
+                <CopyIcon class="w-6" x-show="!copied" />
+                <CheckIcon class="w-6" x-show="copied" />
+            </Button>
+        </div>
+        <div class="p-10 flex flex-col justify-center items-center gap-3">
+            <p>Navigate to</p>
+            <div class="flex gap-3">
+                <a href="/pact" class="text-violet-400 hover:text-violet-600 hover:underline">Pact</a>
+                <a href="/map/" class="text-violet-400 hover:text-violet-600 hover:underline">Map</a>
+            </div>
+        </div>
+    </div>
+</Layout>

@@ -1,0 +1,65 @@
+---
+import Button from './Button.astro';
+import PlayIcon from './Icons/play.svg';
+import PauseIcon from './Icons/pause.svg';
+---
+
+<div
+  transition:persist
+  x-data="{
+    isPlaying: false,
+    init() {
+      const audio = this.$refs.audio;
+      if (!audio) return;
+
+      const playPromise = audio.play();
+
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => {
+            this.isPlaying = true;
+          })
+          .catch(() => {
+            this.isPlaying = false;
+          });
+      }
+
+      setTimeout(() => {
+      }, 500);
+    },
+    toggle() {
+      const audio = this.$refs.audio;
+
+      if (audio.paused) {
+        audio.play();
+        this.isPlaying = true;
+      } else {
+        audio.pause();
+        this.isPlaying = false;
+      }
+    }
+  }"
+  x-init="init()"
+  @audio-play.window="isPlaying = true"
+  @audio-pause.window="isPlaying = false"
+>
+  <audio
+    x-ref="audio"
+    autoplay
+    loop
+    src="/audio/orchestral-bg-music.mp3"
+    transition:name="bg-music"
+    transition:persist="bg-music"
+    @play="$dispatch('audio-play')"
+    @pause="$dispatch('audio-pause')"
+  ></audio>
+
+  <Button
+    type="default"
+    class="fixed bottom-4 right-4 z-50"
+    @click="toggle()"
+  >
+    <PlayIcon class="w-6" x-show="!isPlaying" />
+    <PauseIcon class="w-6" x-show="isPlaying" />
+  </Button>
+</div>
