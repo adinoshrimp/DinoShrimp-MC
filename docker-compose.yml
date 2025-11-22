@@ -20,7 +20,8 @@ services:
     ports:
       - "80:80"
       - "443:443"
-      - "8080:8080"
+      # Dashboard port
+      # - "8080:8080"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ./traefik/letsencrypt:/letsencrypt
@@ -40,7 +41,6 @@ services:
     ports:
       - "25565:25565"
       - "19132:19132/udp"
-      - "8100:8100"
     volumes:
       - ./data:/data
       - ./mods:/data/mods
@@ -53,7 +53,7 @@ services:
       - mc
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.website.rule=Host(`mc.dinoshrimp.com`)"
+      - "traefik.http.routers.website.rule=Host(`${WEBSITE_DOMAIN}`)"
       - "traefik.http.routers.website.entrypoints=websecure"
       - "traefik.http.routers.website.tls.certresolver=letsencrypt"
       - "traefik.http.services.website.loadbalancer.server.port=80"
