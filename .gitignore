@@ -1,3 +1,4 @@
 data/
 traefik/letsencrypt/
 .env
+config/floodgate/key.pem
