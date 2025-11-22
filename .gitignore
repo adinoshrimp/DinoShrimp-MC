@@ -1,2 +1,3 @@
 data/
-traefik/certs/
+traefik/letsencrypt/
+.env
