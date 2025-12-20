@@ -4,6 +4,10 @@
 
 DinoShrimp MC is a SMP Minecraft server that aims to provide a seamless experience between Bedrock and Java players. The server provides Website with a small story, a 3D Web Map and a server side modding for villages and server moderation.
 
+## Requirements
+
+- Docker Compose
+- NodeJS >= 20
 
 ## Setup
 
